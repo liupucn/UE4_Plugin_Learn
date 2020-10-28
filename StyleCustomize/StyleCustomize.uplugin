@@ -1,0 +1,22 @@
+{
+	"FileVersion": 3,
+	"Version": 9,
+	"VersionName": "1.5.24",
+	"FriendlyName": "StyleCustomize Customize",
+	"Description": "Change UE4Editor To a New Style.",
+	"Category": "Editor",
+	"CanContainContent": true,
+	"Installed": true,
+	"IsBetaVersion": true,
+	"EnabledByDefault": true,
+	"Modules": [
+		{
+			"Name": "StyleCustomize",
+			"Type": "Editor",
+			"LoadingPhase": "PostEngineInit",
+			"WhitelistPlatforms": [
+				"Win64"
+			]
+		}
+	]
+}
