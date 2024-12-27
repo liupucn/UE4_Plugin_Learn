@@ -1,0 +1,80 @@
+
+#include "/Engine/Private/Common.ush"
+#include "/Engine/Private/DeferredShadingCommon.ush"
+
+int LightEffectIntensity;
+int CoordSystemType;
+float2 CameraFOV;
+
+const static float OneOfThree = 1.0 / 3.0;
+const static float2 UVCenter = float2(0.5, 0.5);
+
+void BlendCamera_MainPS(
+	FScreenVertexOutput Input,
+	out float4 OutColor : SV_Target0
+	)
+{
+	float3 SceneColor = float3(0, 0, 0);
+	if(LightEffectIntensity == 1)
+	{
+		SceneColor = CalcSceneColor(Input.UV);
+	}
+	else
+	{
+		FScreenSpaceData ScreenSpaceData = GetScreenSpaceData(Input.UV, false);
+		SceneColor = ScreenSpaceData.GBuffer.DiffuseColor;
+	}
+	
+	FScreenSpaceData ScreenSpaceData1 = GetScreenSpaceData(Input.UV, false);
+	float CustomStencil = ScreenSpaceData1.GBuffer.CustomStencil;
+	//OutColor = float4(SceneColor, CustomStencil / 255.0);
+	OutColor = float4(103.0 / 256.0, 253.0 / 256.0, 63.0 / 256.0, 255);
+	
+#if SOURCE_MODE_LIDAR_AND_INTENSITY
+	//float2 BufferUV = SvPositionToBufferUV(Input.Position);
+	//float Intensity = (SceneColor.x + SceneColor.y + SceneColor.z) * OneOfThree;
+	//Input.Position.z = LookupDeviceZ(BufferUV);
+	//if(CoordSystemType == 0)
+	//{
+	//	float3 TranslatedWorld = SvPositionToWorld(Input.Position);
+	//	OutColor = float4(TranslatedWorld.xyz, Intensity);
+	//}
+	//else if(CoordSystemType == 1)
+	//{
+	//	float3 TranslatedWorld = SvPositionToTranslatedWorld(Input.Position);
+	//	float4 ViewPos = mul(float4(TranslatedWorld.xyz, 1),View.TranslatedWorldToView);
+	//	OutColor = float4(ViewPos.xyz, Intensity);
+	//}
+	//else
+	//	OutColor = float4(0, 0, 0, Intensity);
+#elif SOURCE_MODE_ANGLE_DEPTH_INTENSITY
+	//float Intensity = (SceneColor.x + SceneColor.y + SceneColor.z) * OneOfThree;
+ //   float2 BufferUV = SvPositionToBufferUV(Input.Position);
+	//Input.Position.z = LookupDeviceZ(BufferUV);
+	//float3 TranslatedWorld = SvPositionToTranslatedWorld(Input.Position);
+	
+	//float4 ViewPos = mul(float4(TranslatedWorld.xyz, 1),View.TranslatedWorldToView);
+	//float PointLength = length(TranslatedWorld);
+	//if(PointLength <= 0 || (ViewPos.x >= PointLength)) 
+	//{
+	//	OutColor = float4(0,0,0,0);
+	//}
+	//else
+	//{
+	//	float Beta = asin(ViewPos.x / PointLength);
+	//	float Arfa = asin(ViewPos.y / (PointLength * cos(Beta)));
+	//	OutColor = float4(Arfa, Beta, PointLength, Intensity);
+	//}
+	
+	//FScreenSpaceData ScreenSpaceData1 = GetScreenSpaceData(Input.UV, false);
+	//float CustomStencil = ScreenSpaceData1.GBuffer.CustomStencil;
+	
+	//OutColor = float4(0.5, 0.5, 0.5, 0.5);
+#elif SOURCE_MODE_DEPTH_AND_INTENSITY
+	//float Intensity = (SceneColor.x + SceneColor.y + SceneColor.z) * OneOfThree;
+ //   float2 ScreenUV = SvPositionToBufferUV(Input.Position);
+	//Input.Position.z = LookupDeviceZ(ScreenUV);
+	//float3 TranslatedWorld = SvPositionToTranslatedWorld(Input.Position);
+	//OutColor = float4(length(TranslatedWorld),Intensity, 0, 0);
+#endif
+}
